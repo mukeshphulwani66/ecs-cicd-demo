@@ -34,4 +34,4 @@ jobs:
             context: ./API-jokes
             file: ./API-jokes/Dockerfile.prod
             push: true
-            tags: ${{steps.meta.outcome.tags}} 
+            tags: ${{steps.meta.outputs.tags}} 
