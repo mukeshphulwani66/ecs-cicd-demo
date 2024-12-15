@@ -11,14 +11,10 @@ main().catch(err => console.log(err));
 
 
 async function main() {
-//    await mongoose.connect('mongodb://localhost:27017/mukeshdb');  
-//    await mongoose.connect('mongodb://localhost:7000/mukeshdb');  
 //    await mongoose.connect('mongodb://host.docker.internal:7000/mukeshdb');  
 //    await mongoose.connect('mongodb://172.17.0.2:27017/mukeshdb');  
 //    await mongoose.connect('mongodb://mongodb:27017/mukeshdb');  
-//    await mongoose.connect(`mongodb://${process.env.USERNAME}:${process.env.PASSWORD}@mongodb:27017/mukeshdb?authSource=admin`);  
-   await mongoose.connect(`${process.env.MONGO_URI}`);  
-
+   await mongoose.connect(`${process.env.MONGOURI}`);  
 }
 
 mongoose.connection.on('connected',()=>{
@@ -37,7 +33,7 @@ app.get('/getJokes',async (req,res)=>{
 })
 
 app.get('/',(req,res)=>{
-   res.json({message:"application is up and running v3"})
+   res.json({message:"application is up and running v1"})
 })
 
 app.post('/post-joke',async (req,res)=>{
