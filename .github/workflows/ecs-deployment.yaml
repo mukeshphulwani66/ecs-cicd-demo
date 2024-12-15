@@ -64,11 +64,11 @@ jobs:
           - name: Build and push docker image
             uses: docker/build-push-action@v6
             with:
-              context: ./API-jokes
-              file: ./API-jokes/Dockerfile.prod
+              context: ./react-client
+              file: ./react-client/Dockerfile.prod
               push: true
               build-args: |
-                VITE_API_BASE_URL=http://ecsdemolb-901884821.us-east-1.elb.amazonaws.com
+                VITE_API_BASE_URL=http://ecsdemolb-1486322725.us-east-1.elb.amazonaws.com
               tags: ${{steps.meta.outputs.tags}} 
     deploy-to-ecs:
         runs-on: ubuntu-latest 
@@ -89,19 +89,21 @@ jobs:
                 task-definition-family: ${{ env.ECS_TASK_DEFINITION }}
                 container-name: ${{ env.NODE_CONTAINER_NAME }}
                 image: ${{vars.DOCKER_USERNAME}}/${{env.NODE_IMAGE_NAME}} 
-          # - name: Modify Amazon ECS task definition with second container for react
-          #   id: taskdef-react
-          #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-          #   with:
-          #       task-definition: ${{ steps.task-def.outputs.task-definition }}
-          #       container-name:  ${{ env.REACT_CONTAINER_NAME }}
-          #       image: ${{vars.DOCKER_USERNAME}}/${{env.REACT_IMAGE_NAME}}      
+          - name: Modify Amazon ECS task definition with second container for react
+            id: taskdef-react
+            uses: aws-actions/amazon-ecs-render-task-definition@v1
+            with:
+                task-definition: ${{ steps.task-def.outputs.task-definition }}
+                container-name:  ${{ env.REACT_CONTAINER_NAME }}
+                image: ${{vars.DOCKER_USERNAME}}/${{env.REACT_IMAGE_NAME}}      
           - name: Deploy Amazon ECS task definition
             uses: aws-actions/amazon-ecs-deploy-task-definition@v2
             with:
-                task-definition: ${{ steps.task-def.outputs.task-definition }}
+                task-definition: ${{ steps.taskdef-react.outputs.task-definition }}
                 service: ${{ env.ECS_SERVICE }}
                 cluster: ${{ env.ECS_CLUSTER }}
                 wait-for-service-stability: true   
-                force-new-deployment: true   
+     
+              
+                
         
