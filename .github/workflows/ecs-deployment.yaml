@@ -68,7 +68,7 @@ jobs:
               file: ./API-jokes/Dockerfile.prod
               push: true
               build-args: |
-                VITE_API_BASE_URL=ECSdemolb-580463352.us-east-1.elb.amazonaws.com
+                VITE_API_BASE_URL=http://ecsdemolb-901884821.us-east-1.elb.amazonaws.com
               tags: ${{steps.meta.outputs.tags}} 
     deploy-to-ecs:
         runs-on: ubuntu-latest 
@@ -97,7 +97,7 @@ jobs:
                 container-name:  ${{ env.REACT_CONTAINER_NAME }}
                 image: ${{vars.DOCKER_USERNAME}}/${{env.REACT_IMAGE_NAME}}      
           - name: Deploy Amazon ECS task definition
-            uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v2
             with:
                 task-definition: ${{ steps.taskdef-react.outputs.task-definition }}
                 service: ${{ env.ECS_SERVICE }}
